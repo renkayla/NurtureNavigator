@@ -1,4 +1,5 @@
 require('dotenv').config();
+const GraphQLJSON = require('graphql-type-json');
 const User = require('../models/User');
 const Plant = require('../models/Plant');
 const bcrypt = require('bcryptjs');
@@ -21,7 +22,8 @@ function generateToken(user) {
 }
 
 const resolvers = {
-  Query: {
+    Date: GraphQLJSON,
+    Query: {
     async getUsers(){
         try {
             const users = await User.find();
