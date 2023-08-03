@@ -13,7 +13,35 @@ const PlantSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  // add more fields as needed based on API data and application's needs
+  species: {
+    type: String,
+    required: true,
+  },
+  waterNeeds: {
+    type: String,
+    required: true,
+  },
+  lightNeeds: {
+    type: String,
+    required: true,
+  },
+  nutrientNeeds: {
+    type: String,
+    required: true,
+  },
+  commonName: String,
+  scientificName: String,
+  family: String,
+  origin: String,
+  wateringFrequency: String,
+  lightCondition: String,
+  petFriendly: Boolean,
+  plantDescription: String,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User' 
+  }
 });
 
 module.exports = mongoose.model('Plant', PlantSchema);
