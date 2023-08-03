@@ -1,10 +1,17 @@
 import React from 'react'
+import "./style.css"
+import logo from "../../assets/logo.png"
 
 function Header() {
   return (
-    <div>
-      
-    </div>
+    <header>
+        <div>
+        <img src={logo} alt="logo"/> 
+        </div>
+        <nav>
+            <input placeholder='Plant Search...'/>
+        </nav>
+    </header>
   )
 }
 
