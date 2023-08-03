@@ -22,34 +22,66 @@ function generateToken(user) {
 }
 
 const resolvers = {
-    Date: GraphQLJSON,
-    Query: {
-    async getUsers(){
-        try {
-            const users = await User.find();
-            return users;
-          } catch(err) {
-            throw new Error(err);
-          } // logic to fetch all users
+  Date: GraphQLJSON,
+  Query: {
+    async getUsers() {
+      try {
+        const users = await User.find();
+        return users;
+      } catch (err) {
+        throw new Error(err);
+      } // logic to fetch all users
     },
-    async getUser(_, { userId }){
-        try {
-            const user = await User.findById(userId);
-            if (user) {
-              return user;
-            } else {
-              throw new Error('User not found');
-            }
-          } catch(err) {
-            throw new Error(err);
-          } // logic to fetch a user by userId
+    async getUser(_, { userId }) {
+      try {
+        const user = await User.findById(userId);
+        if (user) {
+          return user;
+        } else {
+          throw new Error('User not found');
+        }
+      } catch (err) {
+        throw new Error(err);
+      } // logic to fetch a user by userId
     },
-    async getPlant(_, { plantId }){
-        const plantData = await getPlantData(plantId);
-        return plantData;
+    async getPlant(_, { plantId }) {
+      try {
+        const plant = await Plant.findById(plantId);
+        if (plant) {
+          return plant;
+        } else {
+          throw new Error('Plant not found');
+        }
+      } catch (err) {
+        throw new Error(err);
+      } // logic to fetch plant by Id
+    },
+    getAllPlants: async () => {
+      try {
+        let plants = await Plant.find().populate('userId');
+        plants = plants.map(plant => {
+          let plantData = plant._doc;
+          return {
+            id: plantData._id.toString(),
+            name: plantData.name || 'Unknown',
+            species: plantData.species || 'Unknown',
+            waterNeeds: plantData.waterNeeds || 'Unknown',
+            lightNeeds: plantData.lightNeeds || 'Unknown',
+            nutrientNeeds: plantData.nutrientNeeds || 'Unknown',
+            wateringFrequency: plantData.wateringFrequency || 'Unknown',
+            lastLight: plantData.lastLight ? plantData.lastLight : new Date(),
+            lastWatered: plantData.lastWatered ? plantData.lastWatered : new Date(),
+            lastFed: plantData.lastFed ? plantData.lastFed : new Date(),
+            lastNutrient: plantData.lastNutrient ? plantData.lastNutrient : new Date(),
+            userId: plantData.userId.toString(),
+          }
+        });
+        return plants;
+      } catch (err) {
+        throw new Error(err);
+      } // logic to fetch all plants
     },
   },
-  
   Mutation: {
     async register(_, { registerInput: { username, email, password, confirmPassword }}){
       // 1. Validate user data
@@ -88,7 +120,7 @@ const resolvers = {
         token
       };
     },
-    async login(_, { username, password }){
+    async login(_, { username, password }) {
       // 1. Validate user data
       const { errors, valid } = validateLoginInput(username, password);
       if (!valid) {
@@ -118,54 +150,107 @@ const resolvers = {
         token
       };
     },
-    async addPlant(_, { userId, name, species, waterNeeds, lightNeeds, nutrientNeeds },) {
-        // First, find the user by userId
-        const user = await User.findById(userId);
-        
-        if (user) {
-          // If user is found, create a new plant
-          const newPlant = new Plant({
-            name,
-            species,
-            waterNeeds,
-            lightNeeds,
-            nutrientNeeds,
-            user: user.id,
-          });
-          
-          // Save the plant
-          const plant = await newPlant.save();
-      
-          // Add the plant to the user's plants
-          user.plants.push(plant);
-          await user.save();
-      
-          return plant;
-        } else {
-          throw new Error('User not found');
-        }
-      },
-      
-      async updatePlantCare(_, { plantId, lastWatered, lastLight, lastNutrient }, context) {
-        // Find the plant by plantId
+    async addPlant(_, { userId, name, species, waterNeeds, lightNeeds, nutrientNeeds, commonName, scientificName, family, origin, wateringFrequency, lightCondition, petFriendly, plantDescription }) {
+      const user = await User.findById(userId);
+
+      if (user) {
+        const newPlant = new Plant({
+          name,
+          species: species || 'unknown',
+          userId: user._id,
+          waterNeeds,
+          lightNeeds,
+          nutrientNeeds,
+          commonName,
+          scientificName,
+          family,
+          origin,
+          wateringFrequency,
+          lightCondition,
+          petFriendly,
+          plantDescription,
+          user: user._id,
+        });
+
+        const plant = await newPlant.save();
+        user.plants.push(plant);
+        await user.save();
+
+        return {
+          ...plant._doc,
+          id: plant._id,
+          userId: user._id, // This returns the userId as part of the mutation's result
+        };
+      } else {
+        throw new Error('User not found');
+      }
+    },
+    
+    async updatePlant(_, { plantId, species, waterNeeds, lightNeeds, nutrientNeeds, commonName, scientificName, family, origin, wateringFrequency, lightCondition, petFriendly, plantDescription }, context) {
+      checkAuth(context);
+
+      try {
+        let plant = await Plant.findById(plantId);
+        if (!plant) throw new Error('Plant not found');
+
+        plant.species = species || plant.species;
+        plant.waterNeeds = waterNeeds || plant.waterNeeds;
+        plant.lightNeeds = lightNeeds || plant.lightNeeds;
+        plant.nutrientNeeds = nutrientNeeds || plant.nutrientNeeds;
+        plant.commonName = commonName || plant.commonName;
+        plant.scientificName = scientificName || plant.scientificName;
+        plant.family = family || plant.family;
+        plant.origin = origin || plant.origin;
+        plant.wateringFrequency = wateringFrequency || plant.wateringFrequency;
+        plant.lightCondition = lightCondition || plant.lightCondition;
+        plant.petFriendly = petFriendly !== undefined ? petFriendly : plant.petFriendly;
+        plant.plantDescription = plantDescription || plant.plantDescription;
+
+        const updatedPlant = await plant.save();
+
+        return updatedPlant;
+      } catch (err) {
+        throw new Error(err);
+      } // logic to update plant details
+    },
+    async updatePlantCare(_, { plantId, lastWatered, lastLight, lastNutrient }, context) {
+      // Find the plant by plantId
+      const plant = await Plant.findById(plantId);
+
+      if (plant) {
+        // If plant is found, update the care details
+        plant.lastWatered = lastWatered;
+        plant.lastLight = lastLight;
+        plant.lastNutrient = lastNutrient;
+
+        // Save the plant
+        await plant.save();
+
+        return plant;
+      } else {
+        throw new Error('Plant not found');
+      } // logic to update plant care
+    },
+    deletePlant: async (_, { plantId }, context) => {
+      // Verify the user is authenticated before allowing the delete
+      checkAuth(context);
+
+      try {
         const plant = await Plant.findById(plantId);
-        
-        if (plant) {
-          // If plant is found, update the care details
-          plant.lastWatered = lastWatered;
-          plant.lastLight = lastLight;
-          plant.lastNutrient = lastNutrient;
-          
-          // Save the plant
-          await plant.save();
-      
-          return plant;
+        if (!plant) throw new Error('Plant not found');
+
+        if (plant.userId.toString() === context.user.id) {
+          // User is allowed to delete this plant
+          await plant.delete();
+          return 'Plant deleted successfully';
         } else {
-          throw new Error('Plant not found');
+          throw new AuthenticationError('Action not allowed');
         }
-      },
-      
-  },
+      } catch (err) {
+        throw new Error(err);
+      } // logic to delete plant
+    },
+  }
 };
 
 module.exports = resolvers;

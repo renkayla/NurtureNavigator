@@ -22,7 +22,8 @@ const UserSchema = new mongoose.Schema({
       ref: 'Plant'
     }
   ]
-});
+}, { timestamps: true }); // This line adds 'createdAt' and 'updatedAt'
+
 
 UserSchema.pre('save', async function(next) {
   if (this.isModified('password')) {
