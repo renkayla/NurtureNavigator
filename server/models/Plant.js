@@ -37,6 +37,7 @@ const PlantSchema = new mongoose.Schema({
   lightCondition: String,
   petFriendly: Boolean,
   plantDescription: String,
+
   user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
