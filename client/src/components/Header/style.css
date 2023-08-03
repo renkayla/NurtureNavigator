@@ -1,0 +1,8 @@
+header img {
+    width: 11vw;
+    align-items: center;
+}
+
+header {
+    display: flex;
+}
