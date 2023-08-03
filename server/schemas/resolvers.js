@@ -81,6 +81,30 @@ const resolvers = {
     },
   },
   Mutation: {
+
+    followUser: async (parent, { followerId, followeeId }, context) => {
+      try {
+        // First, update the follower's 'following' array
+        const updatedFollower = await User.findByIdAndUpdate(
+          followerId, 
+          { $addToSet: { following: followeeId } }, 
+          { new: true }
+        );
+
+        // Then, update the followee's 'followers' array
+        const updatedFollowee = await User.findByIdAndUpdate(
+          followeeId, 
+          { $addToSet: { followers: followerId } }, 
+          { new: true }
+        );
+
+        return updatedFollower; // Return the updated follower document
+      } catch (err) {
+        console.log(err);
+        throw new Error(err);
+      }
+    },
+
     async register(_, { registerInput: { username, email, password, confirmPassword }}){
       // 1. Validate user data
       const { valid, errors } = validateRegisterInput(username, email, password, confirmPassword);
