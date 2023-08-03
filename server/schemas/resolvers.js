@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongoose').Types;
 require('dotenv').config();
 const GraphQLJSON = require('graphql-type-json');
 const User = require('../models/User');
@@ -58,23 +59,20 @@ const resolvers = {
     },
     getAllPlants: async () => {
       try {
-        let plants = await Plant.find().populate('userId');
+        let plants = await Plant.find().populate('user', 'username email').lean();
+        
         plants = plants.map(plant => {
-          let plantData = plant._doc;
+          // Convert ObjectId instances to strings
+          const userId = plant.user._id.toString();
           return {
-            id: plantData._id.toString(),
-            name: plantData.name || 'Unknown',
-            species: plantData.species || 'Unknown',
-            waterNeeds: plantData.waterNeeds || 'Unknown',
-            lightNeeds: plantData.lightNeeds || 'Unknown',
-            nutrientNeeds: plantData.nutrientNeeds || 'Unknown',
-            wateringFrequency: plantData.wateringFrequency || 'Unknown',
-            lastLight: plantData.lastLight ? plantData.lastLight : new Date(),
-            lastWatered: plantData.lastWatered ? plantData.lastWatered : new Date(),
-            lastFed: plantData.lastFed ? plantData.lastFed : new Date(),
-            lastNutrient: plantData.lastNutrient ? plantData.lastNutrient : new Date(),
-            userId: plantData.userId.toString(),
-          }
+            ...plant,
+            id: plant._id.toString(),
+            userId,
+            lastLight: plant.lastLight || new Date(),
+            lastWatered: plant.lastWatered || new Date(),
+            lastFed: plant.lastFed || new Date(),
+            lastNutrient: plant.lastNutrient || new Date(),
+          };
         });
         return plants;
       } catch (err) {
