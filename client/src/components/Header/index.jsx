@@ -50,7 +50,7 @@ export default function Navbar() {
               </div>
               <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
                 <div className="flex space-x-4">
-                    <a href="#" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white">
+                    <a href="/signup" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white">
                       Create Account
                     </a>
                     <a

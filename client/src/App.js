@@ -13,6 +13,7 @@ import store from './utils/store';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 import Header from "./components/Header"
 import Footer from "./components/Footer"
 
@@ -51,10 +52,10 @@ function App() {
                 path="/login" 
                 element={<Login />} 
               />
-              {/* <Route 
+              <Route 
                 path="/signup" 
-                element={<Signup />} 
-              /> */}
+                element={<SignUp />} 
+              />
             </Routes>
             <Footer />
           </Provider>
