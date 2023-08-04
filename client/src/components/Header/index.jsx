@@ -10,18 +10,20 @@ function classNames(...classes) {
 
 export default function Navbar() {
   return (
-    <Disclosure as="nav" className="bg-green-800">
+    <Disclosure as="nav" className="bg-green-800" style={{ boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)" }} >
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex items-center px-2 lg:px-0">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-8 w-auto"
-                    src={logo}
-                    alt="NutureNavigator"
-                  />
+                <div className="flex-shrink-0 pt-12">
+                  <div className="flex overflow-hidden items-center justify-center rounded-full h-28 w-28 bg-white shadow-md"> {/* Circular container */}
+                    <img
+                      className="h-28 -mt-4 w-auto" 
+                      src={logo}
+                      alt="NutureNavigator"
+                    />
+                  </div>
                 </div>
                 <div className="hidden lg:ml-6 lg:block">
                   <div className="w-full max-w-lg lg:max-w-xs">
