@@ -18,11 +18,13 @@ export default function Navbar() {
               <div className="flex items-center px-2 lg:px-0">
                 <div className="flex-shrink-0 pt-12">
                   <div className="flex overflow-hidden items-center justify-center rounded-full h-28 w-28 bg-white shadow-md"> {/* Circular container */}
-                    <img
-                      className="h-28 -mt-4 w-auto" 
-                      src={logo}
-                      alt="NutureNavigator"
-                    />
+                    <a href='/'>
+                      <img
+                        className="h-28 -mt-4 w-auto" 
+                        src={logo}
+                        alt="NutureNavigator"
+                      />
+                    </a>
                   </div>
                 </div>
                 <div className="hidden lg:ml-6 lg:block">
@@ -52,7 +54,7 @@ export default function Navbar() {
                       Create Account
                     </a>
                     <a
-                      href="#"
+                      href="/login"
                       className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                     >
                       Login
