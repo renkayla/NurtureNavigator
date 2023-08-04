@@ -55,6 +55,7 @@ function App() {
                 element={<Signup />} 
               /> */}
             </Routes>
+            <Footer />
           </Provider>
         </>
       </Router>
