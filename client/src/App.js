@@ -7,6 +7,8 @@ import { Provider } from 'react-redux';
 import store from './utils/store';
 
 import Home from './pages/Home';
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -41,10 +43,19 @@ function App() {
           <Provider store={store}>
             {showHeader && <Header />} {/* Render the header conditionally */}
             <Routes>
-              <Route path="/" element={<Home />} />
-              {/* Add other routes */}
+              <Route 
+                path="/" 
+                element={<Home />} 
+              />
+              <Route 
+                path="/login" 
+                element={<Login />} 
+              />
+              <Route 
+                path="/signup" 
+                element={<SignUp />} 
+              />
             </Routes>
-            <Footer /> {/* Render the footer on all pages */}
           </Provider>
         </>
       </Router>
