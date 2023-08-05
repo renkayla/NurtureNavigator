@@ -1,11 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  createHttpLink,
-} from '@apollo/client';
+import { ApolloProvider, ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 
 import { Provider } from 'react-redux';
@@ -14,11 +9,12 @@ import store from './utils/store';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
-import Header from "./components/Header"
-import Footer from "./components/Footer"
+import Header from './components/Header';
+import Footer from './components/Footer';
 
+// Move ApolloClient initialization outside the App component
 const httpLink = createHttpLink({
-  uri: '/graphql',
+  uri: 'http://localhost:3001/graphql', // backend URL
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -37,12 +33,15 @@ const client = new ApolloClient({
 });
 
 function App() {
+  // Use the location to determine whether to show the header
+  const showHeader = window.location.pathname !== '/login' && window.location.pathname !== '/signup';
+
   return (
     <ApolloProvider client={client}>
       <Router>
         <>
           <Provider store={store}>
-            <Header />
+            {showHeader && <Header />} {/* Render the header conditionally */}
             <Routes>
               <Route 
                 path="/" 
@@ -57,7 +56,6 @@ function App() {
                 element={<SignUp />} 
               />
             </Routes>
-            <Footer />
           </Provider>
         </>
       </Router>
