@@ -59,6 +59,7 @@ function App() {
           </Provider>
         </>
       </Router>
+      <Footer /> {/* This is where your Footer component gets used */}
     </ApolloProvider>
   );
 }
