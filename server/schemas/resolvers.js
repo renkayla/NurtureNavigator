@@ -1,5 +1,5 @@
-const { ObjectId } = require('mongoose').Types;
 require('dotenv').config();
+const { ObjectId } = require('mongoose').Types;
 const GraphQLJSON = require('graphql-type-json');
 const User = require('../models/User');
 const Plant = require('../models/Plant');
@@ -105,7 +105,7 @@ const resolvers = {
       }
     },
 
-    async register(_, { registerInput: { username, email, password, confirmPassword }}){
+    async register(_, { registerInput: { username, email, password, confirmPassword, firstName, lastName }}){
       // 1. Validate user data
       const { valid, errors } = validateRegisterInput(username, email, password, confirmPassword);
       if (!valid) {
@@ -122,15 +122,17 @@ const resolvers = {
         });
       }
 
-      // Hash the user's password and create a new user.
-      password = await bcrypt.hash(password, 12);
-      const newUser = new User({
-        username,
-        email,
-        password,
-        createdAt: new Date().toISOString()
-      });
-
+  // Hash the user's password and create a new user.
+  password = await bcrypt.hash(password, 12);
+  const newUser = new User({
+    username,
+    email,
+    password,
+    firstName,
+    lastName,
+    createdAt: new Date().toISOString()
+  });
+  
       const res = await newUser.save();
 
       // 3. create an auth token

@@ -56,7 +56,9 @@ scalar Date
     password: String!
     confirmPassword: String!
     email: String!
-  }
+    firstName: String!
+    lastName: String!
+  }  
 `;
 
 module.exports = typeDefs;

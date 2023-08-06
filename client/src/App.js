@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ApolloProvider, ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
@@ -36,6 +37,17 @@ function App() {
   // Use the location to determine whether to show the header
   const showHeader = window.location.pathname !== '/login' && window.location.pathname !== '/signup';
 
+    // Import navigate from react-router-dom
+    const navigate = useNavigate();
+
+    // Use a useEffect hook to check if the user is already logged in
+    useEffect(() => {
+      const token = localStorage.getItem('id_token');
+      if (token && (window.location.pathname === '/signup')) {
+        navigate('/');
+      }
+    }, [navigate]);
+
   return (
     <ApolloProvider client={client}>
       <Router>
@@ -59,7 +71,7 @@ function App() {
           </Provider>
         </>
       </Router>
-      <Footer /> {/* This is where your Footer component gets used */}
+      <Footer /> {/* Footer component gets used */}
     </ApolloProvider>
   );
 }
