@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useMutation } from "@apollo/client";
 import { useNavigate } from 'react-router-dom';
+import isStrongPassword from 'validator/lib/isStrongPassword';
 import { REGISTER } from "../../utils/mutations";
+
 
 function SignUp() {
   const [formState, setFormState] = useState({ firstName: '', lastName: '', email: '', password: '' });
@@ -19,17 +21,33 @@ function SignUp() {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const { data } = await registerUser({
-        variables: { ...formState }
-      });
-  
-      console.log("Response Data:", data.register);
-      navigate('/login');
-    } catch (error) {
-      console.error("Mutation Error:", error);
+    if (isStrongPassword(formState.password, {
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+      returnScore: false,
+      pointsPerUnique: 1,
+      pointsPerRepeat: 0.5,
+      pointsForContainingLower: 10,
+      pointsForContainingUpper: 10,
+      pointsForContainingNumber: 10,
+      pointsForContainingSymbol: 10
+    })) {
+      try {
+        await registerUser({
+          variables: { ...formState }
+        });
+        navigate('/login');
+      } catch (error) {
+        console.error("Mutation Error:", error);
+      }
+    } else {
+      alert('Your password must have at least 8 characters, 1 number, 1 lowercase letter, 1 uppercase letter, and 1 special character.');
     }
   };
+
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
