@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server');
 const getPlantData = require('../api/plantApi');
-const { validateRegisterInput, validateLoginInput } = require('../util/validators');
+const { validateRegisterInput, validateLoginInput } = require('../utils/validators');
 
 // Create a token for user
 function generateToken(user) {
