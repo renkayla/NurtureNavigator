@@ -6,7 +6,7 @@ import { LOGIN } from '../../utils/mutations';
 const Login = () => {
   let navigate = useNavigate();
   const [login, { error }] = useMutation(LOGIN);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleFormSubmit = async (event) => {
@@ -18,7 +18,7 @@ const Login = () => {
       localStorage.setItem('token', data.login.token);
       navigate("/"); //redirects the user to the home page after successful login
     } catch (e) {
-      console.error(e);
+      console.error(JSON.stringify(e, null, 2));
     }
   };
 

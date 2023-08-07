@@ -37,11 +37,5 @@ const UserSchema = new mongoose.Schema({
 }, { timestamps: true }); // This line adds 'createdAt' and 'updatedAt'
 
 
-UserSchema.pre('save', async function(next) {
-  if (this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, 12);
-  }
-  next();
-});
 
 module.exports = mongoose.model('User', UserSchema);
