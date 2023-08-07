@@ -5,6 +5,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import logo from "../../assets/logo.png"
 import avatar from "../../assets/avatar.webp"
 import { Link } from 'react-router-dom'; 
+import AuthService from '../../utils/auth';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -50,18 +51,43 @@ export default function Navbar() {
                 </div>
               </div>
               <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
-                <div className="flex space-x-4">
-                <Link to="/signup" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white">
+              <div className="flex space-x-4">
+                {!AuthService.loggedIn() ? (
+                  <>
+                    <Link to="/signup" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white">
                       Create Account
-                      </Link>
-                      <Link
+                    </Link>
+                    <Link
                       to="/login"
                       className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                     >
                       Login
-                      </Link>
-                  </div>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/logout"
+                      onClick={() => {
+                        AuthService.logout();
+                        alert("You have been logged out");
+                      }}
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      Logout
+                    </Link>
+                    <Link
+                      to="/profile"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      Profile
+                    </Link>
+                  </>
+                )}
               </div>
+
+              </div>
+
               <div className="flex lg:hidden">
                 {/* Mobile menu button */}
                 <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
@@ -155,56 +181,70 @@ export default function Navbar() {
             </div>
           </div>
 
-          <Disclosure.Panel className="lg:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
-              {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
-              <Disclosure.Button
-                as="a"
-                href="#"
-                className="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
+              <Disclosure.Panel className="lg:hidden">
+      <div className="space-y-1 px-2 pb-3 pt-2">
+        {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
+        <Disclosure.Button
+          as="a"
+          href="#"
+          className="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
+        >
+          Dashboard
+        </Disclosure.Button>
+      </div>
+      <div className="border-t border-gray-700 pb-3 pt-4">
+        <div className="flex items-center px-5">
+          <button
+            type="button"
+            className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+          >
+            <span className="absolute -inset-1.5" />
+            <span className="sr-only">View notifications</span>
+            <BellIcon className="h-6 w-6" aria-hidden="true" />
+          </button>
+        </div>
+        <div className="mt-3 space-y-1 px-2">
+          {!AuthService.loggedIn() ? (
+            <>
+              <Link
+                to="/signup"
+                className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
               >
-                Dashboard
-              </Disclosure.Button>
-            </div>
-            <div className="border-t border-gray-700 pb-3 pt-4">
-              <div className="flex items-center px-5">
-                <button
-                  type="button"
-                  className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                >
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
-              </div>
-              <div className="mt-3 space-y-1 px-2">
-                <Disclosure.Button
-                  as="a"
-                  href="#"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                >
-                  Your Profile
-                </Disclosure.Button>
-                <Disclosure.Button
-                  as="a"
-                  href="#"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                >
-                  Settings
-                </Disclosure.Button>
-                <Disclosure.Button
-                  as="a"
-                  href="#"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                >
-                  Sign out
-                </Disclosure.Button>
-              </div>
-            </div>
-          </Disclosure.Panel>
-        </>
-      )}
+                Create Account
+              </Link>
+              <Link
+                to="/login"
+                className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+              >
+                Login
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/logout"
+                onClick={() => {
+                  AuthService.logout();
+                  alert("You have been logged out");
+                }}
+                className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+              >
+                Logout
+              </Link>
+              <Link
+                to="/profile"
+                className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+              >
+                Profile
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
+    </Disclosure.Panel>
+    </>
+    )}
     </Disclosure>
-  )
-}
+      )
+    }
 
