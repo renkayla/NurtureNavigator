@@ -13,7 +13,7 @@ const Login = () => {
     event.preventDefault();
     try {
       const { data } = await login({
-        variables: { email, password },
+        variables: { username, password },
       });
       localStorage.setItem('token', data.login.token);
       navigate("/"); //redirects the user to the home page after successful login
@@ -27,13 +27,13 @@ const Login = () => {
       <h2>Login</h2>
       <form onSubmit={handleFormSubmit}>
         <div>
-          <label htmlFor="email">Email</label>
+          <label htmlFor="username">Username</label>
           <input
-            type="email"
-            name="email"
-            id="email"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
+            type="text"
+            name="username"
+            id="username"
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
           />
         </div>
         <div>
