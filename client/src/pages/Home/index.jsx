@@ -1,12 +1,20 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import plant1 from "../../assets/plant1.jpg"
 import plant2 from "../../assets/plant2.jpg"
 import plant3 from "../../assets/plant3.webp"
 import plant4 from "../../assets/plant4.jpg"
 import plant5 from "../../assets/plant5.jpg"
 
+import { Link } from 'react-router-dom';
 
 function Home() {
+  const navigate = useNavigate();
+
+  const handleGetStartedClick = () => {
+    navigate("/plant-search");
+  };
+
   return (
     <main>
         <div className="relative isolate">
@@ -56,16 +64,16 @@ function Home() {
                   <p className="relative mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">
                     Discover Plant Care Made Easy: Your Go-to Source for All Things Green. Uncover the secrets of plant nurturing as you explore our online haven. Whether you're a budding enthusiast or a seasoned gardener, our digital garden is here to help you cultivate your knowledge.
                   </p>
-                  <div className="mt-10 flex items-center gap-x-6">
-                    <a
-                      href="#"
-                      className="rounded-md bg-green-800 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                      Get started
-                    </a>
-                    <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-                      Live demo <span aria-hidden="true">→</span>
-                    </a>
+                <div className="mt-10 flex items-center gap-x-6">
+                  <button
+                    onClick={handleGetStartedClick}
+                    className="rounded-md bg-green-800 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    Get started
+                  </button>
+                  <Link to="/live-demo" className="text-sm font-semibold leading-6 text-gray-900">
+                  Live demo <span aria-hidden="true">→</span>
+                </Link>
                   </div>
                 </div>
                 <div className="mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">

@@ -10,6 +10,9 @@ import store from './utils/store';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import PlantSearch from "./pages/PlantSearch";
+import PlantDetail from './pages/PlantDetail';
+import AddPlant from './pages/AddPlant';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -56,6 +59,18 @@ function RoutesComponent() {
       <Route 
         path="/signup" 
         element={<SignUp />} 
+      />
+        <Route 
+        path="/plant-search" 
+        element={<PlantSearch />} 
+      />
+      <Route 
+        path="/plant/:id" 
+        element={<PlantDetail />} 
+      />
+      <Route 
+        path="/add-plant" 
+        element={<AddPlant />} 
       />
     </Routes>
   );
