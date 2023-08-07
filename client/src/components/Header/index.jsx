@@ -1,252 +1,143 @@
-import { Fragment } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import logo from "../../assets/logo.png"
-import avatar from "../../assets/avatar.webp"
-import { Link } from 'react-router-dom'; 
+import { Fragment } from 'react';
+import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import logo from "../../assets/logo.png";
+import avatar from "../../assets/avatar.webp";
+import { Link } from 'react-router-dom';
 import AuthService from '../../utils/auth';
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+function AuthenticatedNav() {
+    return (
+        <Link
+            to="#"
+            onClick={() => {
+                AuthService.logout();
+                alert("You have been logged out");
+            }}
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+        >
+            Logout
+        </Link>
+    );
+}
+
+function UnauthenticatedNav() {
+    return (
+        <>
+            <Link to="/signup" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white">
+                Create Account
+            </Link>
+            <Link
+                to="/login"
+                className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+            >
+                Login
+            </Link>
+        </>
+    );
 }
 
 export default function Navbar() {
-  return (
-    <Disclosure as="nav" className="bg-green-800" style={{ boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)" }} >
-      {({ open }) => (
-        <>
-          <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
-            <div className="relative flex h-16 items-center justify-between">
-              <div className="flex items-center px-2 lg:px-0">
-                <div className="flex-shrink-0 pt-12">
-                  <div className="flex overflow-hidden items-center justify-center rounded-full h-28 w-28 bg-white shadow-md"> {/* Circular container */}
-                  <Link to='/'>
-                      <img
-                        className="h-28 -mt-4 w-auto" 
-                        src={logo}
-                        alt="NutureNavigator"
-                      />
-                    </Link>
-                  </div>
-                </div>
-                <div className="hidden lg:ml-6 lg:block">
-                  <div className="w-full max-w-lg lg:max-w-xs">
-                    <label htmlFor="search" className="sr-only">
-                      Search
-                    </label>
-                    <div className="relative">
-                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                      </div>
-                      <input
-                        id="search"
-                        name="search"
-                        className="block w-full rounded-md border-0 bg-green-700 py-1.5 pl-10 pr-3 text-gray-100 placeholder:text-gray-400 focus:bg-white focus:text-gray-900 focus:ring-0 sm:text-sm sm:leading-6"
-                        placeholder="Search"
-                        type="search"
-                      />
+    const isAuthenticated = AuthService.loggedIn();
+    console.log(isAuthenticated);
+
+    return (
+        <Disclosure as="nav" className="bg-green-800" style={{ boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)" }}>
+            {({ open }) => (
+                <>
+                    {/* Main Navbar Content */}
+                    <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
+                        <div className="relative flex h-16 items-center justify-between">
+
+                            {/* Logo and Search Section */}
+                            <div className="flex items-center px-2 lg:px-0">
+                                <div className="flex-shrink-0 pt-12">
+                                    <div className="flex overflow-hidden items-center justify-center rounded-full h-28 w-28 bg-white shadow-md">
+                                        <Link to='/'>
+                                            <img className="h-28 -mt-4 w-auto" src={logo} alt="NutureNavigator" />
+                                        </Link>
+                                    </div>
+                                    {isAuthenticated && (
+                                        <Menu as="div" className="relative ml-4 flex-shrink-0">
+                                            <div>
+                                                <Menu.Button className="rounded-full">
+                                                    <img className="h-8 w-8 rounded-full" src={avatar} alt="" />
+                                                </Menu.Button>
+                                            </div>
+                                            <Transition as={Fragment}>
+                                                <Menu.Items className="absolute mt-2 right-0 w-48 bg-white rounded-md shadow-lg focus:outline-none">
+                                                    <Menu.Item>
+                                                        <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                            Your Profile
+                                                        </Link>
+                                                    </Menu.Item>
+                                                    <Menu.Item>
+                                                        <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                            Settings
+                                                        </Link>
+                                                    </Menu.Item>
+                                                    <Menu.Item>
+                                                        <Link
+                                                            to="#"
+                                                            onClick={() => {
+                                                                AuthService.logout();
+                                                                alert("You have been logged out");
+                                                            }}
+                                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                        >
+                                                            Sign out
+                                                        </Link>
+                                                    </Menu.Item>
+                                                </Menu.Items>
+                                            </Transition>
+                                        </Menu>
+                                    )}
+                                </div>
+                                <div className="hidden lg:ml-6 lg:block">
+                                    <div className="w-full max-w-lg lg:max-w-xs">
+                                        <label htmlFor="search" className="sr-only">Search</label>
+                                        <div className="relative">
+                                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                            </div>
+                                            <input
+                                                id="search"
+                                                name="search"
+                                                className="block w-full rounded-md border-0 bg-green-700 py-1.5 pl-10 pr-3 text-gray-100 placeholder:text-gray-400 focus:bg-white focus:text-gray-900 focus:ring-0 sm:text-sm sm:leading-6"
+                                                placeholder="Search"
+                                                type="search"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Auth Links */}
+                            <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
+                                <div className="flex space-x-4">
+                                    {isAuthenticated ? <AuthenticatedNav /> : <UnauthenticatedNav />}
+                                </div>
+                            </div>
+
+                            {/* Mobile Menu Toggle */}
+                            <div className="flex lg:hidden">
+                                <Disclosure.Button className="rounded-md px-2 py-1 text-white hover:bg-green-700 focus:outline-none">
+                                    {open ? <XMarkIcon className="block h-6 w-6" aria-hidden="true" /> : <Bars3Icon className="block h-6 w-6" aria-hidden="true" />}
+                                </Disclosure.Button>
+                            </div>
+
+                        </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
-              <div className="flex space-x-4">
-                {!AuthService.loggedIn() ? (
-                  <>
-                    <Link to="/signup" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white">
-                      Create Account
-                    </Link>
-                    <Link
-                      to="/login"
-                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                    >
-                      Login
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      to="/logout"
-                      onClick={() => {
-                        AuthService.logout();
-                        alert("You have been logged out");
-                      }}
-                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                    >
-                      Logout
-                    </Link>
-                    <Link
-                      to="/profile"
-                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                    >
-                      Profile
-                    </Link>
-                  </>
-                )}
-              </div>
 
-              </div>
-
-              <div className="flex lg:hidden">
-                {/* Mobile menu button */}
-                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                  <span className="absolute -inset-0.5" />
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
-              </div>
-             
-              <div className="hidden lg:ml-4 lg:block">
-                <div className="flex items-center">
-                  <button
-                    type="button"
-                    className="relative flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                  >
-                    <span className="absolute -inset-1.5" />
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
-
-                  {/* Profile dropdown */}
-                  <Menu as="div" className="relative ml-4 flex-shrink-0">
-                    <div>
-                      <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                        <span className="absolute -inset-1.5" />
-                        <span className="sr-only">Open user menu</span>
-                        <img
-                          className="h-8 w-8 rounded-full"
-                          src={avatar}
-                          alt=""
-                        />
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
-                    >
-                      <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <Menu.Item>
-                          {({ active }) => (
-                            <Link
-                            to="/profile"
-                              className={classNames(
-                                active ? 'bg-gray-100' : '',
-                                'block px-4 py-2 text-sm text-gray-700'
-                              )}
-                            >
-                              Your Profile
-                            </Link>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                             <Link
-                             to="/settings"
-                              className={classNames(
-                                active ? 'bg-gray-100' : '',
-                                'block px-4 py-2 text-sm text-gray-700'
-                              )}
-                            >
-                              Settings
-                              </Link>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                             <Link
-                             to="/logout"
-                              className={classNames(
-                                active ? 'bg-gray-100' : '',
-                                'block px-4 py-2 text-sm text-gray-700'
-                              )}
-                            >
-                              Sign out
-                            </Link>
-                          )}
-                        </Menu.Item>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
-                </div>
-              </div>
-              
-            </div>
-          </div>
-
-              <Disclosure.Panel className="lg:hidden">
-      <div className="space-y-1 px-2 pb-3 pt-2">
-        {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
-        <Disclosure.Button
-          as="a"
-          href="#"
-          className="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
-        >
-          Dashboard
-        </Disclosure.Button>
-      </div>
-      <div className="border-t border-gray-700 pb-3 pt-4">
-        <div className="flex items-center px-5">
-          <button
-            type="button"
-            className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-          >
-            <span className="absolute -inset-1.5" />
-            <span className="sr-only">View notifications</span>
-            <BellIcon className="h-6 w-6" aria-hidden="true" />
-          </button>
-        </div>
-        <div className="mt-3 space-y-1 px-2">
-          {!AuthService.loggedIn() ? (
-            <>
-              <Link
-                to="/signup"
-                className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-              >
-                Create Account
-              </Link>
-              <Link
-                to="/login"
-                className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-              >
-                Login
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/logout"
-                onClick={() => {
-                  AuthService.logout();
-                  alert("You have been logged out");
-                }}
-                className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-              >
-                Logout
-              </Link>
-              <Link
-                to="/profile"
-                className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-              >
-                Profile
-              </Link>
-            </>
-          )}
-        </div>
-      </div>
-    </Disclosure.Panel>
-    </>
-    )}
-    </Disclosure>
-      )
-    }
-
+                    {/* Mobile Auth Links */}
+                    <Disclosure.Panel className="lg:hidden">
+                        <div className="mt-3 space-y-1 px-2">
+                            {isAuthenticated ? <AuthenticatedNav /> : <UnauthenticatedNav />}
+                        </div>
+                    </Disclosure.Panel>
+                </>
+            )}
+        </Disclosure>
+    )
+}

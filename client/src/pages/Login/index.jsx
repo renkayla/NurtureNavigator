@@ -3,6 +3,8 @@ import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { LOGIN } from '../../utils/mutations';
 
+
+
 const Login = () => {
   let navigate = useNavigate();
   const [login, { error }] = useMutation(LOGIN);
@@ -16,7 +18,8 @@ const Login = () => {
         variables: { username, password },
       });
       localStorage.setItem('token', data.login.token);
-      navigate("/"); //redirects the user to the home page after successful login
+      console.log("Token stored successfully!");
+      navigate("/profile"); //redirects the user to the profile page after successful login
     } catch (e) {
       console.error(JSON.stringify(e, null, 2));
     }

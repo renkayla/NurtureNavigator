@@ -10,23 +10,6 @@ export const LOGIN = gql`
   }
 `;
 
-export const ADD_ORDER = gql`
-  mutation addOrder($products: [ID]!) {
-    addOrder(products: $products) {
-      purchaseDate
-      products {
-        _id
-        name
-        description
-        price
-        quantity
-        category {
-          name
-        }
-      }
-    }
-  }
-`;
 
 export const REGISTER = gql`
   mutation register($username: String!, $email: String!, $password: String!, $firstName: String!, $lastName: String!) {
@@ -54,6 +37,18 @@ export const ADD_PLANT = gql`
       waterNeeds
       lightNeeds
       nutrientNeeds
+    }
+  }
+`;
+
+export const GET_USER_DATA = gql`
+  query GetUserData($userId: ID!) {
+    getUser(userId: $userId) {
+      username
+      plants {
+        id
+        name
+      }
     }
   }
 `;

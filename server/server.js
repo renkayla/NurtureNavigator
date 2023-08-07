@@ -14,7 +14,7 @@ const server = new ApolloServer({
   resolvers,
   introspection: true, // enables introspection of the schema
   playground: true, // enables the actual playground
-  context: authMiddleware,
+  context: ({ req }) => ({ req })
 });
 
 app.use(express.urlencoded({ extended: false }));
