@@ -100,7 +100,7 @@ export default function Navbar() {
                   )}
                 </Disclosure.Button>
               </div>
-              {AuthService.loggedIn() ? (
+             
               <div className="hidden lg:ml-4 lg:block">
                 <div className="flex items-center">
                   <button
@@ -179,7 +179,7 @@ export default function Navbar() {
                   </Menu>
                 </div>
               </div>
-              ) : (<></>)}
+              
             </div>
           </div>
 
