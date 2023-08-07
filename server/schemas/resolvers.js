@@ -107,11 +107,12 @@ const resolvers = {
 
     async register(_, { registerInput: { username, email, password, confirmPassword, firstName, lastName }}){
       // 1. Validate user data
-      const { valid, errors } = validateRegisterInput(username, email, password, confirmPassword);
+      // Make sure to update validateRegisterInput to include firstName and lastName
+      const { valid, errors } = validateRegisterInput(username, email, password, confirmPassword, firstName, lastName);
       if (!valid) {
         throw new UserInputError('Errors', { errors });
       }
-
+    
       // 2. Make sure user doesn't already exist
       const existingUser = await User.findOne({ username });
       if (existingUser) {
@@ -121,29 +122,30 @@ const resolvers = {
           }
         });
       }
-
-  // Hash the user's password and create a new user.
-  password = await bcrypt.hash(password, 12);
-  const newUser = new User({
-    username,
-    email,
-    password,
-    firstName,
-    lastName,
-    createdAt: new Date().toISOString()
-  });
-  
+    
+      // Hash the user's password and create a new user.
+      password = await bcrypt.hash(password, 12);
+      const newUser = new User({
+        username,
+        email,
+        password,
+        firstName,
+        lastName,
+        createdAt: new Date().toISOString()
+      });
+    
       const res = await newUser.save();
-
+    
       // 3. create an auth token
       const token = generateToken(res);
-
+    
       return {
         ...res._doc,
         id: res._id,
         token
       };
     },
+    
     async login(_, { username, password }) {
       // 1. Validate user data
       const { errors, valid } = validateLoginInput(username, password);

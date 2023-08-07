@@ -33,20 +33,37 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+function RoutesComponent() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('id_token');
+    if (token && (window.location.pathname === '/signup')) {
+      navigate('/');
+    }
+  }, [navigate]);
+
+  return (
+    <Routes>
+      <Route 
+        path="/" 
+        element={<Home />} 
+      />
+      <Route 
+        path="/login" 
+        element={<Login />} 
+      />
+      <Route 
+        path="/signup" 
+        element={<SignUp />} 
+      />
+    </Routes>
+  );
+}
+
 function App() {
   // Use the location to determine whether to show the header
   const showHeader = window.location.pathname !== '/login' && window.location.pathname !== '/signup';
-
-    // Import navigate from react-router-dom
-    const navigate = useNavigate();
-
-    // Use a useEffect hook to check if the user is already logged in
-    useEffect(() => {
-      const token = localStorage.getItem('id_token');
-      if (token && (window.location.pathname === '/signup')) {
-        navigate('/');
-      }
-    }, [navigate]);
 
   return (
     <ApolloProvider client={client}>
@@ -54,20 +71,7 @@ function App() {
         <>
           <Provider store={store}>
             {showHeader && <Header />} {/* Render the header conditionally */}
-            <Routes>
-              <Route 
-                path="/" 
-                element={<Home />} 
-              />
-              <Route 
-                path="/login" 
-                element={<Login />} 
-              />
-              <Route 
-                path="/signup" 
-                element={<SignUp />} 
-              />
-            </Routes>
+            <RoutesComponent />
           </Provider>
         </>
       </Router>

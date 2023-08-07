@@ -4,23 +4,32 @@ import { useNavigate } from 'react-router-dom';
 import isStrongPassword from 'validator/lib/isStrongPassword';
 import { REGISTER } from "../../utils/mutations";
 
-
 function SignUp() {
-  const [formState, setFormState] = useState({ firstName: '', lastName: '', email: '', password: '' });
+  // Initialize the navigation hook
   const navigate = useNavigate();
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
-  };
-
+  // Register mutation hook
   const [registerUser, { loading, error }] = useMutation(REGISTER);
 
+  // Initial state
+  const [formState, setFormState] = useState({
+    username: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  });
+
+  // Handle form input changes
+  const handleChange = event => {
+    const { name, value } = event.target;
+    setFormState(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  // Handle form submit
   const handleFormSubmit = async (event) => {
     event.preventDefault();
+
     if (isStrongPassword(formState.password, {
       minLength: 8,
       minLowercase: 1,
@@ -48,7 +57,6 @@ function SignUp() {
     }
   };
 
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
@@ -75,6 +83,7 @@ function SignUp() {
                 autoComplete="name"
                 required
                 onChange={handleChange}
+                value={formState.firstName}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6"
                 />
             </div>
@@ -93,8 +102,27 @@ function SignUp() {
                 autoComplete="name"
                 required
                 onChange={handleChange}
+                value={formState.lastName}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6"
                 />
+            </div>
+          </div>
+          {/* Username */}
+
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
+              Enter your username
+            </label>
+            <div className="mt-2">
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                onChange={handleChange}
+                value={formState.username}
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6"
+              />
             </div>
           </div>
 
@@ -111,6 +139,7 @@ function SignUp() {
                 autoComplete="email"
                 required
                 onChange={handleChange}
+                value={formState.email}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6"
                 />
             </div>
@@ -129,6 +158,7 @@ function SignUp() {
                         autoComplete="new-password"
                         required
                         onChange={handleChange}
+                        value={formState.password}
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6"
                     />
                     </div>
