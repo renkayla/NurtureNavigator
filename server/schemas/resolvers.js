@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server');
 const getPlantData = require('../api/plantApi');
 const { validateRegisterInput, validateLoginInput } = require('../utils/validators');
+const { signToken } = require("../utils/auth")
 
 // Create a token for user
 function generateToken(user) {
@@ -183,7 +184,7 @@ const resolvers = {
         throw new UserInputError('Wrong crendetials');
       }
     
-      const token = generateToken(user);
+      const token = signToken(user);
       return {
         ...user._doc,
         id: user._id,
