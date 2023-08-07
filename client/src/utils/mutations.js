@@ -45,3 +45,15 @@ export const REGISTER = gql`
 `;
 
 
+export const ADD_PLANT = gql`
+  mutation AddPlant($name: String!, $species: String!, $waterNeeds: String!, $lightNeeds: String!, $nutrientNeeds: String!, $userId: ID!) {
+    addPlant(name: $name, species: $species, waterNeeds: $waterNeeds, lightNeeds: $lightNeeds, nutrientNeeds: $nutrientNeeds, userId: $userId) {
+      id
+      name
+      species
+      waterNeeds
+      lightNeeds
+      nutrientNeeds
+    }
+  }
+`;

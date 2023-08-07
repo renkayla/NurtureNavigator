@@ -4,6 +4,8 @@ import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import logo from "../../assets/logo.png"
 import avatar from "../../assets/avatar.webp"
+import { Link } from 'react-router-dom'; 
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -18,13 +20,13 @@ export default function Navbar() {
               <div className="flex items-center px-2 lg:px-0">
                 <div className="flex-shrink-0 pt-12">
                   <div className="flex overflow-hidden items-center justify-center rounded-full h-28 w-28 bg-white shadow-md"> {/* Circular container */}
-                    <a href='/'>
+                  <Link to='/'>
                       <img
                         className="h-28 -mt-4 w-auto" 
                         src={logo}
                         alt="NutureNavigator"
                       />
-                    </a>
+                    </Link>
                   </div>
                 </div>
                 <div className="hidden lg:ml-6 lg:block">
@@ -45,20 +47,19 @@ export default function Navbar() {
                       />
                     </div>
                   </div>
-
                 </div>
               </div>
               <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
                 <div className="flex space-x-4">
-                    <a href="/signup" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white">
+                <Link to="/signup" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white">
                       Create Account
-                    </a>
-                    <a
-                      href="/login"
+                      </Link>
+                      <Link
+                      to="/login"
                       className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                     >
                       Login
-                    </a>
+                      </Link>
                   </div>
               </div>
               <div className="flex lg:hidden">
@@ -109,41 +110,41 @@ export default function Navbar() {
                       <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <Menu.Item>
                           {({ active }) => (
-                            <a
-                              href="#"
+                            <Link
+                            to="/profile"
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
                               )}
                             >
                               Your Profile
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
-                              href="#"
+                             <Link
+                             to="/settings"
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
                               )}
                             >
                               Settings
-                            </a>
+                              </Link>
                           )}
                         </Menu.Item>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
-                              href="#"
+                             <Link
+                             to="/logout"
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
                               )}
                             >
                               Sign out
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       </Menu.Items>
