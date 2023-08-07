@@ -6,19 +6,19 @@ import { LOGIN } from '../../utils/mutations';
 const Login = () => {
   let navigate = useNavigate();
   const [login, { error }] = useMutation(LOGIN);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
       const { data } = await login({
-        variables: { email, password },
+        variables: { username, password },
       });
       localStorage.setItem('token', data.login.token);
       navigate("/"); //redirects the user to the home page after successful login
     } catch (e) {
-      console.error(e);
+      console.error(JSON.stringify(e, null, 2));
     }
   };
 
@@ -27,13 +27,13 @@ const Login = () => {
       <h2>Login</h2>
       <form onSubmit={handleFormSubmit}>
         <div>
-          <label htmlFor="email">Email</label>
+          <label htmlFor="username">Username</label>
           <input
-            type="email"
-            name="email"
-            id="email"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
+            type="text"
+            name="username"
+            id="username"
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
           />
         </div>
         <div>

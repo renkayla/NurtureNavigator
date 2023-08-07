@@ -1,50 +1,65 @@
 import React, { useState } from 'react';
 import { useMutation } from "@apollo/client";
 import { useNavigate } from 'react-router-dom';
+import isStrongPassword from 'validator/lib/isStrongPassword';
 import { REGISTER } from "../../utils/mutations";
 
 function SignUp() {
-  const [formState, setFormState] = useState({ firstName: '', lastName: '', email: '', password: '' });
-
-  // Ignore the 'no-unused-vars' warnings for the following variables
-  // eslint-disable-next-line no-unused-vars
-  const [mutationError, setMutationError] = useState('');
-  // Rename 'error' to 'formError'
-  // eslint-disable-next-line no-unused-vars
-  const [formError, setFormError] = useState();
-  // eslint-disable-next-line no-unused-vars
-  const [data, setData] = useState();
-
-  const [register, { error }] = useMutation(REGISTER);
+  // Initialize the navigation hook
   const navigate = useNavigate();
 
+  // Register mutation hook
+  const [registerUser, { loading, error }] = useMutation(REGISTER);
 
-  const handleChange = (event) => {
+  // Initial state
+  const [formState, setFormState] = useState({
+    username: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  });
+
+  // Handle form input changes
+  const handleChange = event => {
     const { name, value } = event.target;
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
+    setFormState(prevState => ({ ...prevState, [name]: value }));
   };
 
+  // Handle form submit
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const response = await register({
-        variables: { ...formState }
-      });
-  
-      // Access the response data
-      console.log("Response Data:", response.data);
-  
-      // Redirect to the login page after successful signup
-      navigate('/login');
-    } catch (error) {
-      setMutationError(error.message);
-      console.error("Mutation Error:", error);
+
+    if (isStrongPassword(formState.password, {
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+      returnScore: false,
+      pointsPerUnique: 1,
+      pointsPerRepeat: 0.5,
+      pointsForContainingLower: 10,
+      pointsForContainingUpper: 10,
+      pointsForContainingNumber: 10,
+      pointsForContainingSymbol: 10
+    })) {
+      try {
+        await registerUser({
+          variables: { ...formState }
+        });
+        navigate('/login');
+      } catch (error) {
+        console.error("Mutation Error:", error);
+      }
+    } else {
+      alert('Your password must have at least 8 characters, 1 number, 1 lowercase letter, 1 uppercase letter, and 1 special character.');
     }
   };
-  
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 pt-20 pb-40 mb-26 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -68,6 +83,7 @@ function SignUp() {
                 autoComplete="name"
                 required
                 onChange={handleChange}
+                value={formState.firstName}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6"
                 />
             </div>
@@ -86,8 +102,27 @@ function SignUp() {
                 autoComplete="name"
                 required
                 onChange={handleChange}
+                value={formState.lastName}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6"
                 />
+            </div>
+          </div>
+          {/* Username */}
+
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
+              Enter your username
+            </label>
+            <div className="mt-2">
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                onChange={handleChange}
+                value={formState.username}
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6"
+              />
             </div>
           </div>
 
@@ -104,31 +139,31 @@ function SignUp() {
                 autoComplete="email"
                 required
                 onChange={handleChange}
+                value={formState.email}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6"
                 />
             </div>
           </div>
 
-          {/* Password */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                Password
-            </label>
-            <div className="mt-2">
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                onChange={handleChange}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6"
-                />
-            </div>
-          </div>
-
-          {/* Error message for mutation error */}
-          {mutationError && <div>Error: {mutationError}</div>}
+                {/* Password */}
+                <div>
+                    <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                        Enter your password
+                    </label>
+                    <div className="mt-2">
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        autoComplete="new-password"
+                        required
+                        onChange={handleChange}
+                        value={formState.password}
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 sm:text-sm sm:leading-6"
+                    />
+                    </div>
+                </div>
+  
 
           <div>
             <button

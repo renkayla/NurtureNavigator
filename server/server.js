@@ -12,28 +12,29 @@ const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  introspection: true, // enables introspection of the schema
+  playground: true, // enables the actual playground
   context: authMiddleware,
 });
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Serve up static assets
-app.use('/assets', express.static(path.join(__dirname, '../client/src/assets')));
-
-
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
-}
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
-
 // Create a new instance of an Apollo server with the GraphQL schema
 const startApolloServer = async () => {
   await server.start();
   server.applyMiddleware({ app });
+
+  // Serve up static assets
+  if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../client/build')));
+  } else {
+    app.use('/assets', express.static(path.join(__dirname, '../client/src/public')));
+  }
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
 
   db.once('open', () => {
     app.listen(PORT, () => {
@@ -45,4 +46,3 @@ const startApolloServer = async () => {
 
 // Call the async function to start the server
 startApolloServer();
-

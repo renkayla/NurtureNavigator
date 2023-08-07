@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ApolloProvider, ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
@@ -32,6 +33,34 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+function RoutesComponent() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('id_token');
+    if (token && (window.location.pathname === '/signup')) {
+      navigate('/');
+    }
+  }, [navigate]);
+
+  return (
+    <Routes>
+      <Route 
+        path="/" 
+        element={<Home />} 
+      />
+      <Route 
+        path="/login" 
+        element={<Login />} 
+      />
+      <Route 
+        path="/signup" 
+        element={<SignUp />} 
+      />
+    </Routes>
+  );
+}
+
 function App() {
   // Use the location to determine whether to show the header
   const showHeader = window.location.pathname !== '/login' && window.location.pathname !== '/signup';
@@ -42,24 +71,11 @@ function App() {
         <>
           <Provider store={store}>
             {showHeader && <Header />} {/* Render the header conditionally */}
-            <Routes>
-              <Route 
-                path="/" 
-                element={<Home />} 
-              />
-              <Route 
-                path="/login" 
-                element={<Login />} 
-              />
-              <Route 
-                path="/signup" 
-                element={<SignUp />} 
-              />
-            </Routes>
+            <RoutesComponent />
           </Provider>
         </>
       </Router>
-      <Footer /> {/* This is where your Footer component gets used */}
+      <Footer /> {/* Footer component gets used */}
     </ApolloProvider>
   );
 }

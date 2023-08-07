@@ -1,5 +1,5 @@
-const { ObjectId } = require('mongoose').Types;
 require('dotenv').config();
+const { ObjectId } = require('mongoose').Types;
 const GraphQLJSON = require('graphql-type-json');
 const User = require('../models/User');
 const Plant = require('../models/Plant');
@@ -104,14 +104,15 @@ const resolvers = {
         throw new Error(err);
       }
     },
-
-    async register(_, { registerInput: { username, email, password, confirmPassword }}){
+    
+    async register(_, { registerInput: { username, email, password, confirmPassword, firstName, lastName }}){
       // 1. Validate user data
-      const { valid, errors } = validateRegisterInput(username, email, password, confirmPassword);
+      // Make sure to update validateRegisterInput to include firstName and lastName
+      const { valid, errors } = validateRegisterInput(username, email, password, confirmPassword, firstName, lastName);
       if (!valid) {
         throw new UserInputError('Errors', { errors });
       }
-
+    
       // 2. Make sure user doesn't already exist
       const existingUser = await User.findOne({ username });
       if (existingUser) {
@@ -122,56 +123,76 @@ const resolvers = {
         });
       }
 
-      // Hash the user's password and create a new user.
+      // 3. Ensure email doesn't already exist
+      const userWithEmail = await User.findOne({ email });
+      if (userWithEmail) {
+        throw new UserInputError('Email is already registered', {
+          errors: {
+            email: 'This email is already registered'
+          }
+        });
+      }
+
+      // 4. Make sure passwords match
+      if (password !== confirmPassword) {
+        throw new UserInputError('Passwords do not match', {
+          errors: {
+            confirmPassword: 'Passwords do not match'
+          }
+        });
+      }
+    
+      // 5. Hash the user's password and create a new user.
       password = await bcrypt.hash(password, 12);
       const newUser = new User({
         username,
         email,
         password,
+        firstName,
+        lastName,
         createdAt: new Date().toISOString()
       });
+    
+      console.log('New user to be saved:', newUser);
 
       const res = await newUser.save();
-
-      // 3. create an auth token
+    
+      // 6. create an auth token
       const token = generateToken(res);
-
+    
       return {
         ...res._doc,
         id: res._id,
         token
       };
     },
+    
     async login(_, { username, password }) {
-      // 1. Validate user data
-      const { errors, valid } = validateLoginInput(username, password);
-      if (!valid) {
-        throw new UserInputError('Errors', { errors });
-      }
-
-      // 2. Check if user exists
       const user = await User.findOne({ username });
-
+      console.log('Found user:', user);
+    
       if (!user) {
-        errors.general = 'User not found';
-        throw new UserInputError('User not found', { errors });
+        throw new UserInputError('Wrong crendetials');
       }
-
-      // 3. Match password
+      
       const match = await bcrypt.compare(password, user.password);
+    
+      console.log('Password match:', match);
+    
       if (!match) {
-        errors.general = 'Wrong crendetials';
-        throw new UserInputError('Wrong crendetials', { errors });
+        throw new UserInputError('Wrong crendetials');
       }
-
-      // 4. Return jwt token
+    
       const token = generateToken(user);
       return {
         ...user._doc,
         id: user._id,
-        token
+        token,
       };
     },
+    
+
+
     async addPlant(_, { userId, name, species, waterNeeds, lightNeeds, nutrientNeeds, commonName, scientificName, family, origin, wateringFrequency, lightCondition, petFriendly, plantDescription }) {
       const user = await User.findById(userId);
 
