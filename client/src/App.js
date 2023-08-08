@@ -83,7 +83,8 @@ function RoutesComponent() {
 
 function App() {
   // Use the location to determine whether to show the header
-  const showHeader = window.location.pathname !== '/login' && window.location.pathname !== '/signup';
+  // const showHeader = window.location.pathname !== '/login' && window.location.pathname !== '/signup';
+  const showHeader = true;
 
   return (
     <ApolloProvider client={client}>

@@ -67,28 +67,29 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-6 py-20 lg:py-36">
-      <div className="w-full max-w-3xl bg-white p-8 rounded-xl shadow-lg">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">
-          Welcome, {userData ? userData.username : 'Loading...'}!
-        </h1>
-        <h2 className="text-2xl text-gray-700 mb-6">Your Plant Notes:</h2>
-        <div className="space-y-4">
-          {plantNotes.length > 0 ? (
-            plantNotes.map((note) => (
-              <div key={note.id} className="bg-gray-50 p-4 rounded-lg shadow-md">
-                <PlantNote plantNote={note} />
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-600">You have no plant notes yet.</p>
-          )}
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-6 -m-10 py-20 lg:py-28">
+        <div className="w-full max-w-3xl bg-white p-8 rounded-xl shadow-md border border-gray-200">
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">
+                Welcome, {userData ? userData.username : 'Loading...'}!
+            </h1>
+            <h2 className="text-2xl text-gray-700 mb-6 border-b pb-2">Your Plant Notes:</h2>
+            <div className="space-y-4 mt-4">
+                {plantNotes.length > 0 ? (
+                    plantNotes.map((note) => (
+                        <div key={note.id} className="bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                            <PlantNote plantNote={note} />
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-gray-600 italic">You have no plant notes yet.</p>
+                )}
+            </div>
+            <div className="mt-8">
+                <AddPlantNote onAddPlantNote={addPlantNote} />
+            </div>
         </div>
-        <div className="mt-8">
-          <AddPlantNote onAddPlantNote={addPlantNote} />
-        </div>
-      </div>
     </div>
+
   );
 };
 

@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -40,7 +40,22 @@ function UnauthenticatedNav() {
 
 export default function Navbar() {
     const isAuthenticated = AuthService.loggedIn();
-    console.log(isAuthenticated);
+    const [logged, setLogged] = useState(AuthService.loggedIn());
+
+    useEffect(() => {
+        const checkAuthStatus = () => {
+            const currentStatus = AuthService.loggedIn();
+            if (logged !== currentStatus) {
+                setLogged(currentStatus);
+            }
+        };
+
+        const intervalId = setInterval(checkAuthStatus, 1000);
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [logged]);
 
     return (
         <Disclosure as="nav" className="bg-green-800" style={{ boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)" }}>
@@ -58,13 +73,13 @@ export default function Navbar() {
                                             <img className="h-28 -mt-4 w-auto" src={logo} alt="NutureNavigator" />
                                         </Link>
                                     </div>
-                                    {isAuthenticated && (
+                                    {logged && (
                                         <Menu as="div" className="relative ml-4 flex-shrink-0">
-                                            <div>
+                                            {/* <div>
                                                 <Menu.Button className="rounded-full">
                                                     <img className="h-8 w-8 rounded-full" src={avatar} alt="" />
                                                 </Menu.Button>
-                                            </div>
+                                            </div> */}
                                             <Transition as={Fragment}>
                                                 <Menu.Items className="absolute mt-2 right-0 w-48 bg-white rounded-md shadow-lg focus:outline-none">
                                                     <Menu.Item>
@@ -116,7 +131,7 @@ export default function Navbar() {
                             {/* Auth Links */}
                             <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
                                 <div className="flex space-x-4">
-                                    {isAuthenticated ? <AuthenticatedNav /> : <UnauthenticatedNav />}
+                                    {logged ? <AuthenticatedNav /> : <UnauthenticatedNav />}
                                 </div>
                             </div>
 
@@ -133,7 +148,7 @@ export default function Navbar() {
                     {/* Mobile Auth Links */}
                     <Disclosure.Panel className="lg:hidden">
                         <div className="mt-3 space-y-1 px-2">
-                            {isAuthenticated ? <AuthenticatedNav /> : <UnauthenticatedNav />}
+                            {logged ? <AuthenticatedNav /> : <UnauthenticatedNav />}
                         </div>
                     </Disclosure.Panel>
                 </>
