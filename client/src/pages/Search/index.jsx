@@ -2,20 +2,23 @@ import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { API_RESULTS } from "../../utils/queries";
 
-
 const Search = () => {
-  const { data: plants } = useQuery(API_RESULTS);
   const [plant, setPlant] = useState('');
+  const [searchedPlant, setSearchedPlant] = useState(null); // Store the searched result
+
+  const { loading, error, data: plants } = useQuery(API_RESULTS);
 
   console.log(plants);
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
- 
+    if (plants && plants.api && plants.api.data) {
+      const foundPlant = plants.api.data.find(p => p.common_name.toLowerCase() === plant.toLowerCase());
+      setSearchedPlant(foundPlant);
+    }
   };
 
   return (
-
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 pt-20 pb-40 mb-26 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -52,6 +55,25 @@ const Search = () => {
             </div>
           </form>
       </div>
+          {/* Display search result */}
+        {searchedPlant && (
+          <div className="mt-10 p-5 border border-gray-200 rounded-md shadow-md bg-white">
+              <h3 className="text-xl font-semibold mb-4 text-green-700">{searchedPlant.common_name}</h3>
+              <div className="mb-4">
+                  <img className="max-w-full h-auto rounded-md shadow" src={searchedPlant.default_image.medium_url} alt={searchedPlant.common_name} />
+              </div>
+              <p className="mb-2 text-gray-700">
+                  <strong className="text-gray-900">Scientific Name:</strong> {searchedPlant.scientific_name[0]}
+              </p>
+              {searchedPlant.other_name.length > 0 && (
+                  <p className="text-gray-700">
+                      <strong className="text-gray-900">Other Names:</strong> {searchedPlant.other_name.join(', ')}
+                  </p>
+              )}
+          </div>
+
+      )}
+
     </div>
   )
 
