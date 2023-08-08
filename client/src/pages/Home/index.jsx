@@ -59,7 +59,7 @@ function Home() {
               <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
                 <div className="w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
                   <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-                    Plant Care Haven: Your Online Sanctuary for Green Wisdom
+                    Nurture Navigator: Your Online Sanctuary for Green Wisdom
                   </h1>
                   <p className="relative mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">
                     Discover Plant Care Made Easy: Your Go-to Source for All Things Green. Uncover the secrets of plant nurturing as you explore our online haven. Whether you're a budding enthusiast or a seasoned gardener, our digital garden is here to help you cultivate your knowledge.
