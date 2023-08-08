@@ -20,7 +20,7 @@ import Footer from './components/Footer';
 
 // Move ApolloClient initialization outside the App component
 const httpLink = createHttpLink({
-  uri: 'http://localhost:3001/graphql', // backend URL
+  uri: '/graphql', // backend URL
 });
 
 const authLink = setContext((_, { headers }) => {
