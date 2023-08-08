@@ -62,6 +62,10 @@ function RoutesComponent() {
         element={<SignUp />} 
       />
         <Route 
+        path="/profile" 
+        element={<Profile />} 
+      />
+        <Route 
         path="/plant-search" 
         element={<PlantSearch />} 
       />
@@ -71,11 +75,7 @@ function RoutesComponent() {
       />
       <Route 
         path="/add-plant" 
-        element={<AddPlant />} 
-      />
-      <Route 
-        path="/profile" 
-        element={<Profile />} 
+        element={<AddPlant />}  
       />
     </Routes>
   );
