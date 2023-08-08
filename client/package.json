@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.7.17",
+    "@apollo/react-hooks": "^4.0.0",
     "@babel/plugin-proposal-private-property-in-object": "^7.16.0",
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",

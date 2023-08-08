@@ -7,7 +7,8 @@ import {
     UPDATE_CATEGORIES,
     UPDATE_CURRENT_CATEGORY,
     CLEAR_CART,
-    TOGGLE_CART
+    TOGGLE_CART,
+    API_RESULTS
   } from "./actions";
   
   const initialState = {
@@ -85,6 +86,12 @@ import {
         return {
           ...state,
           currentCategory: action.currentCategory
+        }
+
+      case API_RESULTS:
+        return {
+          ...state,
+          apiResults: action.apiResults
         }
   
       default:

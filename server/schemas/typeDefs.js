@@ -2,6 +2,7 @@ const { gql } = require('apollo-server');
 
 const typeDefs = gql`
 scalar Date
+scalar JSON
 
   type User {
     id: ID!
@@ -33,9 +34,14 @@ scalar Date
     userId: ID!
   }
 
+  type Api {
+    data: JSON
+  }
+
   type Query {
     getUsers: [User]
     getUser(userId: ID!): User
+    api: Api
     getPlants: [Plant]
     getPlant(plantId: ID!): Plant
     getAllPlants: [Plant]

@@ -9,6 +9,21 @@ import AuthService from '../../utils/auth';
 
 function AuthenticatedNav() {
     return (
+      <>
+        <Link
+            to="/profile"
+           
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+        >
+            Dashboard
+        </Link>
+        <Link
+            to="/search"
+           
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+        >
+            Search Plants
+        </Link>
         <Link
             to="#"
             onClick={() => {
@@ -19,6 +34,9 @@ function AuthenticatedNav() {
         >
             Logout
         </Link>
+      
+      </>
+
     );
 }
 
