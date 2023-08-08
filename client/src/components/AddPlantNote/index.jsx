@@ -17,27 +17,38 @@ const AddPlantNote = ({ onAddPlantNote }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h3>Add a New Plant Note:</h3>
-            <label>
-                Plant Name:
+        <form onSubmit={handleSubmit} className="space-y-6">
+            <h3 className="text-lg font-semibold text-gray-700">Add a New Plant Note:</h3>
+            <div>
+                <label className="block text-sm font-medium text-gray-600">
+                    Plant Name:
+                </label>
                 <input
                     type="text"
                     value={plantName}
                     onChange={(e) => setPlantName(e.target.value)}
                     required
+                    className="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 />
-            </label>
-            <label>
-                Note:
+            </div>
+            <div>
+                <label className="block text-sm font-medium text-gray-600">
+                    Note:
+                </label>
                 <textarea
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                     required
+                    className="mt-1 p-2 w-full h-24 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-y"
                 />
-            </label>
-            <button type="submit">Add Note</button>
+            </div>
+            <div>
+                <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+                    Add Note
+                </button>
+            </div>
         </form>
+
     );
 };
 
