@@ -9,6 +9,7 @@ const { UserInputError } = require('apollo-server');
 const getPlantData = require('../api/plantApi');
 const { validateRegisterInput, validateLoginInput } = require('../utils/validators');
 const { signToken } = require("../utils/auth")
+const { checkAuth } = require('../utils/auth');
 
 // Create a token for user
 function generateToken(user) {
@@ -83,29 +84,7 @@ const resolvers = {
   },
   Mutation: {
 
-    followUser: async (parent, { followerId, followeeId }, context) => {
-      try {
-        // First, update the follower's 'following' array
-        const updatedFollower = await User.findByIdAndUpdate(
-          followerId, 
-          { $addToSet: { following: followeeId } }, 
-          { new: true }
-        );
 
-        // Then, update the followee's 'followers' array
-        const updatedFollowee = await User.findByIdAndUpdate(
-          followeeId, 
-          { $addToSet: { followers: followerId } }, 
-          { new: true }
-        );
-
-        return updatedFollower; // Return the updated follower document
-      } catch (err) {
-        console.log(err);
-        throw new Error(err);
-      }
-    },
-    
     async register(_, { registerInput: { username, email, password, confirmPassword, firstName, lastName }}){
       // 1. Validate user data
       // Make sure to update validateRegisterInput to include firstName and lastName
@@ -230,70 +209,55 @@ const resolvers = {
       }
     },
     
-    async updatePlant(_, { plantId, species, waterNeeds, lightNeeds, nutrientNeeds, commonName, scientificName, family, origin, wateringFrequency, lightCondition, petFriendly, plantDescription }, context) {
-      checkAuth(context);
+    async updatePlant(_, { plantInput }, context) {
+      // Use the checkAuth function
+      const currentUser = checkAuth(context);
 
-      try {
-        let plant = await Plant.findById(plantId);
-        if (!plant) throw new Error('Plant not found');
+      if (!currentUser) {
+        throw new AuthenticationError('You must be logged in!');
+      }
 
-        plant.species = species || plant.species;
-        plant.waterNeeds = waterNeeds || plant.waterNeeds;
-        plant.lightNeeds = lightNeeds || plant.lightNeeds;
-        plant.nutrientNeeds = nutrientNeeds || plant.nutrientNeeds;
-        plant.commonName = commonName || plant.commonName;
-        plant.scientificName = scientificName || plant.scientificName;
-        plant.family = family || plant.family;
-        plant.origin = origin || plant.origin;
-        plant.wateringFrequency = wateringFrequency || plant.wateringFrequency;
-        plant.lightCondition = lightCondition || plant.lightCondition;
-        plant.petFriendly = petFriendly !== undefined ? petFriendly : plant.petFriendly;
-        plant.plantDescription = plantDescription || plant.plantDescription;
+      const updatedPlant = await Plant.findOneAndUpdate(
+        { _id: plantInput.plantId, userId: currentUser._id }, 
+        { $set: plantInput },
+        { new: true }
+      );
 
-        const updatedPlant = await plant.save();
-
-        return updatedPlant;
-      } catch (err) {
-        throw new Error(err);
-      } // logic to update plant details
+      return updatedPlant;
     },
-    async updatePlantCare(_, { plantId, lastWatered, lastLight, lastNutrient }, context) {
-      // Find the plant by plantId
-      const plant = await Plant.findById(plantId);
 
-      if (plant) {
-        // If plant is found, update the care details
-        plant.lastWatered = lastWatered;
-        plant.lastLight = lastLight;
-        plant.lastNutrient = lastNutrient;
+    async updatePlantCare(_, { plantCareInput }, context) {
+      // Use the checkAuth function
+      const currentUser = checkAuth(context);
 
-        // Save the plant
-        await plant.save();
+      if (!currentUser) {
+        throw new AuthenticationError('You must be logged in!');
+      }
 
-        return plant;
-      } else {
-        throw new Error('Plant not found');
-      } // logic to update plant care
+      const updatedPlantCare = await Plant.findOneAndUpdate(
+        { _id: plantCareInput.plantId, userId: currentUser._id }, 
+        { $set: { care: plantCareInput } },
+        { new: true }
+      );
+
+      return updatedPlantCare;
     },
-    deletePlant: async (_, { plantId }, context) => {
-      // Verify the user is authenticated before allowing the delete
-      checkAuth(context);
 
-      try {
-        const plant = await Plant.findById(plantId);
-        if (!plant) throw new Error('Plant not found');
+    async deletePlant(_, { plantId }, context) {
+      // Use the checkAuth function
+      const currentUser = checkAuth(context);
 
-        if (plant.userId.toString() === context.user.id) {
-          // User is allowed to delete this plant
-          await plant.delete();
-          return 'Plant deleted successfully';
-        } else {
-          throw new AuthenticationError('Action not allowed');
-        }
-      } catch (err) {
-        throw new Error(err);
-      } // logic to delete plant
+      if (!currentUser) {
+        throw new AuthenticationError('You must be logged in!');
+      }
+
+      const deletedPlant = await Plant.findOneAndDelete(
+        { _id: plantId, userId: currentUser._id }
+      );
+
+      return deletedPlant;
     },
+
   }
 };
 

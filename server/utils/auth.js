@@ -1,10 +1,11 @@
 const jwt = require('jsonwebtoken');
+const { AuthenticationError } = require('apollo-server');
 
 const secret = 'mysecretsshhhhh';
 const expiration = '2h';
 
 module.exports = {
-  authMiddleware: function ({ req }) {
+  checkAuth: function ({ req }) {
     // allows token to be sent via req.body, req.query, or headers
     let token = req.body.token || req.query.token || req.headers.authorization;
 
@@ -16,19 +17,18 @@ module.exports = {
         .trim();
     }
 
-    console.log("token", token)
-
+    console.log("token", token);
 
     if (!token) {
-      return req;
+      throw new AuthenticationError('You must be logged in!');
     }
 
     try {
       const { data } = jwt.verify(token, secret, { maxAge: expiration });
       req.user = data;
-    }
-    catch {
-      console.log('Invalid token');
+    } catch (error) {
+      throw new AuthenticationError(`Token verification failed: ${error.message}`);
+
     }
 
     return req;

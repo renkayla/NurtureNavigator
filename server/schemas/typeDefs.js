@@ -45,7 +45,7 @@ scalar Date
     register(registerInput: RegisterInput): User!
     login(username: String!, password: String!): User!
     addPlant(userId: ID!, name: String!, species: String!, waterNeeds: String!, lightNeeds: String!, nutrientNeeds: String!, commonName: String, scientificName: String, family: String, origin: String, wateringFrequency: String, lightCondition: String, petFriendly: Boolean, plantDescription: String): Plant!
-    updatePlant(plantId: ID!, species: String, waterNeeds: String, lightNeeds: String, NutrientNeeds: String, commonName: String, scientificName: String, family: String, origin: String, wateringFrequency: String, lightCondition: String, petFriendly: Boolean, plantDescription: String): Plant
+    updatePlant(plantId: ID!, species: String, waterNeeds: String, lightNeeds: String, nutrientNeeds: String, commonName: String, scientificName: String, family: String, origin: String, wateringFrequency: String, lightCondition: String, petFriendly: Boolean, plantDescription: String): Plant
     updatePlantCare(plantId: ID!, lastWatered: Date!, lastLight: Date!, lastNutrient: Date!): Plant!
     deletePlant(plantId: ID!): String!
     followUser(userId: ID!): User!
