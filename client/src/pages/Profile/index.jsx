@@ -3,21 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import PlantNote from "../../components/PlantNote";
 import AddPlantNote from "../../components/AddPlantNote";
 import { useQuery, useMutation } from '@apollo/client'; 
-import { GET_USER_DATA, ADD_PLANT } from '../../utils/mutations'; 
+import { GET_USER_DATA, ADD_PLANT } from '../../utils/mutations';
+import AuthService from '../../utils/auth'; 
 
 const Profile = () => {
   let navigate = useNavigate();
   const [plantNotes, setPlantNotes] = useState([]);
   const token = localStorage.getItem('token');
   const [userData, setUserData] = useState(null);
+  
+  // Get the user's _id from the decoded JWT token
+  const profile = AuthService.getProfile();
+  const userId = profile.data._id; // Assuming the token has an _id field
 
   // Define addPlant and addPlantError using useMutation
   const [addPlant, { error: addPlantError }] = useMutation(ADD_PLANT);
 
+  console.log("User ID:", userId);
   const { loading, error, data } = useQuery(GET_USER_DATA, {
-    variables: {
-      userId: userData ? userData.id : null
-    },
+    variables: { userId: userId },
     skip: !token,
     context: {
       headers: {
@@ -42,7 +46,6 @@ const Profile = () => {
   if (loading) return 'Loading...';
   if (error) return `Error: ${error.message}`;
 
-
   const addPlantNote = async (newPlantNote) => {
     try {
       const { data } = await addPlant({
@@ -64,17 +67,27 @@ const Profile = () => {
   }
 
   return (
-    <div>
-      <h1>Welcome, {userData ? userData.username : 'Loading...'}!</h1>
-      <h2>Your Plant Notes:</h2>
-      {plantNotes.length > 0 ? (
-        plantNotes.map((note) => (
-          <PlantNote key={note.id} plantNote={note} />
-        ))
-      ) : (
-        <p>You have no plant notes yet.</p>
-      )}
-      <AddPlantNote onAddPlantNote={addPlantNote} />
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-6 py-20 lg:py-36">
+      <div className="w-full max-w-3xl bg-white p-8 rounded-xl shadow-lg">
+        <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">
+          Welcome, {userData ? userData.username : 'Loading...'}!
+        </h1>
+        <h2 className="text-2xl text-gray-700 mb-6">Your Plant Notes:</h2>
+        <div className="space-y-4">
+          {plantNotes.length > 0 ? (
+            plantNotes.map((note) => (
+              <div key={note.id} className="bg-gray-50 p-4 rounded-lg shadow-md">
+                <PlantNote plantNote={note} />
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-600">You have no plant notes yet.</p>
+          )}
+        </div>
+        <div className="mt-8">
+          <AddPlantNote onAddPlantNote={addPlantNote} />
+        </div>
+      </div>
     </div>
   );
 };
