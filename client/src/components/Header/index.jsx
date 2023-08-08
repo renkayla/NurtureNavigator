@@ -75,11 +75,11 @@ export default function Navbar() {
                                     </div>
                                     {logged && (
                                         <Menu as="div" className="relative ml-4 flex-shrink-0">
-                                            <div>
+                                            {/* <div>
                                                 <Menu.Button className="rounded-full">
                                                     <img className="h-8 w-8 rounded-full" src={avatar} alt="" />
                                                 </Menu.Button>
-                                            </div>
+                                            </div> */}
                                             <Transition as={Fragment}>
                                                 <Menu.Items className="absolute mt-2 right-0 w-48 bg-white rounded-md shadow-lg focus:outline-none">
                                                     <Menu.Item>
@@ -136,11 +136,11 @@ export default function Navbar() {
                             </div>
 
                             {/* Mobile Menu Toggle */}
-                            {/* <div className="flex lg:hidden">
+                            <div className="flex lg:hidden">
                                 <Disclosure.Button className="rounded-md px-2 py-1 text-white hover:bg-green-700 focus:outline-none">
                                     {open ? <XMarkIcon className="block h-6 w-6" aria-hidden="true" /> : <Bars3Icon className="block h-6 w-6" aria-hidden="true" />}
                                 </Disclosure.Button>
-                            </div> */}
+                            </div>
 
                         </div>
                     </div>
