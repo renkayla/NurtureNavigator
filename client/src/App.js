@@ -13,6 +13,7 @@ import SignUp from './pages/SignUp';
 import PlantSearch from "./pages/PlantSearch";
 import PlantDetail from './pages/PlantDetail';
 import AddPlant from './pages/AddPlant';
+import Search from './pages/Search';
 import Profile from './pages/Profile';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -60,6 +61,10 @@ function RoutesComponent() {
       <Route 
         path="/signup" 
         element={<SignUp />} 
+      />
+      <Route 
+        path="/search" 
+        element={<Search />} 
       />
         <Route 
         path="/profile" 

@@ -47,6 +47,14 @@ const resolvers = {
         throw new Error(err);
       } // logic to fetch a user by userId
     },
+    api: async (parent, args, context) => {
+      if (context.user) {
+        const response = await getPlantData();
+        return response;
+      }
+
+      throw new AuthenticationError("Not logged in");
+    },
     async getPlant(_, { plantId }) {
       try {
         const plant = await Plant.findById(plantId);
